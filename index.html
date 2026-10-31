@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#12345a">
+  <title>বাংলা জীবনবৃত্তান্ত নির্মাতা</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#"><span class="brand-icon">জী</span><span>বাংলা জীবনবৃত্তান্ত নির্মাতা<small>পেশাদার • সহজ • সম্পূর্ণ বাংলায়</small></span></a>
+    <nav><a href="#editor">সিভি তৈরি</a><a href="#history">সংরক্ষিত সিভি</a></nav>
+  </header>
+
+  <main class="page-wrap">
+    <section class="intro">
+      <div><p class="eyebrow">বাংলাদেশের চাকরির আবেদনের জন্য</p><h1>আপনার পেশাদার জীবনবৃত্তান্ত তৈরি করুন</h1><p>তথ্য পূরণ করুন, নকশা নির্বাচন করুন এবং এক পাতার জীবনবৃত্তান্ত প্রিন্ট বা পিডিএফ হিসেবে সংরক্ষণ করুন।</p></div>
+      <div class="intro-mark" aria-hidden="true">CV</div>
+    </section>
+
+    <div class="workspace" id="editor">
+      <section class="form-column">
+        <div class="panel">
+          <div class="panel-heading"><span>১</span><div><h2>ব্যক্তিগত তথ্য</h2><p>আপনার পরিচয় ও যোগাযোগের তথ্য দিন</p></div></div>
+          <div class="form-grid">
+            <label class="field full"><span>পূর্ণ নাম <b>*</b></span><input id="name" placeholder="আপনার সম্পূর্ণ নাম"></label>
+            <label class="field"><span>পিতার নাম</span><input id="father" placeholder="পিতার নাম"></label>
+            <label class="field"><span>মাতার নাম</span><input id="mother" placeholder="মাতার নাম"></label>
+            <label class="field"><span>জন্ম তারিখ</span><input id="dob" type="date"></label>
+            <label class="field"><span>লিঙ্গ</span><select id="gender"><option value="">নির্বাচন করুন</option><option>পুরুষ</option><option>মহিলা</option><option>অন্যান্য</option></select></label>
+            <label class="field"><span>ধর্ম</span><select id="religion"><option value="">নির্বাচন করুন</option><option>ইসলাম</option><option>হিন্দু</option><option>বৌদ্ধ</option><option>খ্রিষ্টান</option><option>অন্যান্য</option></select></label>
+            <label class="field"><span>জাতীয়তা</span><input id="nationality" value="বাংলাদেশী"></label>
+            <label class="field"><span>উচ্চতা</span><input id="height" placeholder="যেমন: ৫ ফুট ৫ ইঞ্চি"></label>
+            <label class="field"><span>রক্তের গ্রুপ</span><select id="blood"><option value="">নির্বাচন করুন</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></label>
+            <label class="field"><span>বৈবাহিক অবস্থা</span><select id="marital"><option value="">নির্বাচন করুন</option><option>অবিবাহিত</option><option>বিবাহিত</option><option>অন্যান্য</option></select></label>
+            <label class="field"><span>মোবাইল নম্বর</span><input id="phone" inputmode="tel" placeholder="01XXXXXXXXX"></label>
+            <label class="field"><span>ই-মেইল</span><input id="email" type="email" placeholder="example@email.com"></label>
+            <label class="field"><span>জাতীয় পরিচয়পত্র নম্বর</span><input id="nid" placeholder="প্রযোজ্য হলে লিখুন"></label>
+            <label class="field"><span>জন্ম নিবন্ধন নম্বর</span><input id="birthReg" placeholder="প্রযোজ্য হলে লিখুন"></label>
+            <label class="field full"><span>বর্তমান ঠিকানা</span><textarea id="present" rows="2" placeholder="গ্রাম, ডাকঘর, উপজেলা, জেলা"></textarea></label>
+            <label class="field full"><span>স্থায়ী ঠিকানা</span><textarea id="permanent" rows="2" placeholder="গ্রাম, ডাকঘর, উপজেলা, জেলা"></textarea></label>
+            <div class="field full photo-field"><span>পাসপোর্ট সাইজ ছবি</span><div class="photo-row"><img id="photoPreview" alt="ছবির নমুনা" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='110'%3E%3Crect width='100%25' height='100%25' fill='%23edf3f8'/%3E%3Ccircle cx='45' cy='37' r='19' fill='%23a9bdd0'/%3E%3Cpath d='M12 105c2-27 17-40 33-40s31 13 33 40' fill='%23a9bdd0'/%3E%3C/svg%3E"><div><input id="photo" type="file" accept="image/png,image/jpeg,image/webp"><small>জেপিজি, পিএনজি বা ওয়েবপি ছবি ব্যবহার করুন।</small></div></div></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-heading"><span>২</span><div><h2>শিক্ষাগত যোগ্যতা</h2><p>নির্বাচন করুন অথবা নিজের মতো লিখুন</p></div></div>
+          <div class="education-add">
+            <label class="field"><span>পরীক্ষার ধরন</span><select id="eduLevel"><option>প্রাথমিক</option><option>JSC</option><option>SSC</option><option>HSC</option><option>ডিপ্লোমা</option><option>স্নাতক</option><option>স্নাতকোত্তর</option><option>অন্যান্য</option></select></label>
+            <label class="field"><span>নিজস্ব পরীক্ষার নাম</span><input id="eduCustom" placeholder="অন্যান্য হলে লিখুন"></label>
+            <label class="field"><span>গ্রুপ / বিভাগ</span><input id="eduGroup" placeholder="বিজ্ঞান / মানবিক / ব্যবসায় শিক্ষা"></label>
+            <label class="field"><span>বোর্ড / প্রতিষ্ঠান</span><input id="eduBoard" placeholder="বোর্ড বা প্রতিষ্ঠানের নাম"></label>
+            <label class="field"><span>ফলাফল</span><input id="eduResult" placeholder="জিপিএ / সিজিপিএ / বিভাগ"></label>
+            <label class="field"><span>পাসের সাল</span><input id="eduYear" inputmode="numeric" placeholder="২০২৪"></label>
+            <button class="btn btn-add" id="addEducation" type="button">＋ যোগ করুন</button>
+          </div>
+          <div class="table-scroll"><table class="data-table"><thead><tr><th>পরীক্ষা</th><th>গ্রুপ / বিভাগ</th><th>বোর্ড / প্রতিষ্ঠান</th><th>ফলাফল</th><th>সাল</th><th>কাজ</th></tr></thead><tbody id="educationRows"><tr class="empty-row"><td colspan="6">এখনো কোনো শিক্ষাগত যোগ্যতা যোগ করা হয়নি</td></tr></tbody></table></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-heading"><span>৩</span><div><h2>অন্যান্য তথ্য</h2><p>প্রয়োজনীয় বিভাগ চালু করে তথ্য লিখুন</p></div></div>
+          <div class="toggle-list">
+            <label><input type="checkbox" id="objectiveOn" checked> কর্মজীবনের লক্ষ্য</label>
+            <label><input type="checkbox" id="experienceOn"> কর্ম অভিজ্ঞতা</label>
+            <label><input type="checkbox" id="skillsOn"> দক্ষতা</label>
+            <label><input type="checkbox" id="languagesOn"> ভাষাগত দক্ষতা</label>
+            <label><input type="checkbox" id="referenceOn"> রেফারেন্স</label>
+          </div>
+          <div class="optional-fields">
+            <label class="field" data-optional="objective"><span>কর্মজীবনের লক্ষ্য</span><textarea id="objective" rows="3" placeholder="আপনার কর্মজীবনের লক্ষ্য লিখুন"></textarea></label>
+            <label class="field hidden" data-optional="experience"><span>কর্ম অভিজ্ঞতা</span><textarea id="experience" rows="3" placeholder="পদবি, প্রতিষ্ঠানের নাম, কাজের সময়কাল ও দায়িত্ব লিখুন"></textarea></label>
+            <label class="field hidden" data-optional="skills"><span>দক্ষতা</span><textarea id="skills" rows="2" placeholder="কম্পিউটার, যোগাযোগ, দলগত কাজ ইত্যাদি"></textarea></label>
+            <label class="field hidden" data-optional="languages"><span>ভাষাগত দক্ষতা</span><textarea id="languages" rows="2" placeholder="বাংলা — মাতৃভাষা; ইংরেজি — প্রাথমিক"></textarea></label>
+            <label class="field hidden" data-optional="reference"><span>রেফারেন্স</span><textarea id="reference" rows="2" placeholder="নাম, পদবি, প্রতিষ্ঠান ও যোগাযোগ"></textarea></label>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-heading"><span>৪</span><div><h2>নকশা ও সংরক্ষণ</h2><p>আপনার পছন্দের জীবনবৃত্তান্তের ধরন নির্বাচন করুন</p></div></div>
+          <div class="template-options">
+            <label class="template-choice"><input type="radio" name="template" value="classic" checked><span class="mini-template classic-mini"><b>জীবনবৃত্তান্ত</b><i></i><i></i><i></i></span><strong>ক্লাসিক অফিসিয়াল</strong></label>
+            <label class="template-choice"><input type="radio" name="template" value="modern"><span class="mini-template modern-mini"><b>জীবনবৃত্তান্ত</b><i></i><i></i><i></i></span><strong>আধুনিক পেশাদার</strong></label>
+            <label class="template-choice"><input type="radio" name="template" value="elegant"><span class="mini-template elegant-mini"><b>জীবনবৃত্তান্ত</b><i></i><i></i><i></i></span><strong>সাধারণ মার্জিত</strong></label>
+          </div>
+          <label class="field"><span>সিভির নাম (ইতিহাসে দেখাবে)</span><input id="cvTitle" placeholder="যেমন: আমার চাকরির জীবনবৃত্তান্ত"></label>
+          <div class="action-row"><button class="btn btn-primary" id="saveCv" type="button">সিভি সংরক্ষণ করুন</button><button class="btn btn-outline" id="downloadPdf" type="button">পিডিএফ / প্রিন্ট</button></div>
+          <p class="form-note">পিডিএফ পেতে প্রিন্ট উইন্ডোতে “পিডিএফ হিসেবে সংরক্ষণ” নির্বাচন করুন।</p>
+        </div>
+      </section>
+
+      <aside class="preview-column">
+        <div class="preview-sticky">
+          <div class="preview-head"><div><h2>জীবনবৃত্তান্তের নমুনা</h2><p>পরিবর্তনের সঙ্গে সঙ্গে হালনাগাদ হবে</p></div><span class="live-dot">সরাসরি</span></div>
+          <article id="cvPreview" class="cv-paper template-classic">
+            <header class="cv-header"><div class="cv-heading"><h1>জীবনবৃত্তান্ত</h1><div class="title-rule"></div></div><img id="cvPhoto" class="cv-photo" alt="আবেদনকারীর ছবি"></header>
+            <section class="cv-section"><h2>ব্যক্তিগত তথ্য</h2><div class="cv-rule"></div><div id="personalPreview" class="personal-list"></div></section>
+            <section class="cv-section" id="objectivePreviewSection"><h2>কর্মজীবনের লক্ষ্য</h2><div class="cv-rule"></div><p id="objectivePreview">নিজের কর্মজীবনের লক্ষ্য এখানে লিখুন।</p></section>
+            <section class="cv-section"><h2>শিক্ষাগত যোগ্যতা</h2><div class="cv-rule"></div><table class="cv-education"><thead><tr><th>পরীক্ষা</th><th>গ্রুপ / বিভাগ</th><th>বোর্ড / প্রতিষ্ঠান</th><th>ফলাফল</th><th>সাল</th></tr></thead><tbody id="educationPreview"><tr><td colspan="5">তথ্য যোগ করা হলে এখানে দেখা যাবে</td></tr></tbody></table></section>
+            <section class="cv-section hidden" id="experiencePreviewSection"><h2>কর্ম অভিজ্ঞতা</h2><div class="cv-rule"></div><p id="experiencePreview"></p></section>
+            <section class="cv-section hidden" id="skillsPreviewSection"><h2>দক্ষতা</h2><div class="cv-rule"></div><p id="skillsPreview"></p></section>
+            <section class="cv-section hidden" id="languagesPreviewSection"><h2>ভাষাগত দক্ষতা</h2><div class="cv-rule"></div><p id="languagesPreview"></p></section>
+            <section class="cv-section hidden" id="referencePreviewSection"><h2>রেফারেন্স</h2><div class="cv-rule"></div><p id="referencePreview"></p></section>
+            <footer class="cv-footer"><div class="cv-date"><b>তারিখ:</b> <span id="datePreview"></span></div><div class="signature"><span>বিনীত,</span><div class="signature-line"></div><b id="signatureName">আবেদনকারীর স্বাক্ষর</b></div></footer>
+          </article>
+          <p class="preview-tip">প্রিন্ট করার আগে তথ্য ও ছবির অবস্থান দেখে নিন।</p>
+        </div>
+      </aside>
+    </div>
+
+    <section class="history-section" id="history">
+      <div class="section-title"><div><p class="eyebrow">আপনার সংরক্ষিত কাজ</p><h2>সিভির ইতিহাস</h2></div><button class="btn btn-outline btn-small" id="clearHistory" type="button">ইতিহাস মুছুন</button></div>
+      <div id="historyList" class="history-grid"><div class="history-empty">এখনো কোনো সিভি সংরক্ষণ করা হয়নি।</div></div>
+    </section>
+  </main>
+  <footer class="site-footer">বাংলা জীবনবৃত্তান্ত নির্মাতা <span>•</span> আপনার তথ্য আপনার নিজের ব্রাউজারেই সংরক্ষিত থাকে</footer>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
