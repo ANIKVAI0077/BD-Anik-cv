@@ -1,0 +1,19 @@
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
+import { getFirestore, collection, doc, setDoc, getDocs, deleteDoc, query, orderBy, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
+import { firebaseConfig } from './firebase-config.js';
+const $ = id => document.getElementById(id);
+const modal=$('authGate'), appArea=$('appArea'), form=$('authForm'), msg=$('authMessage');
+let mode='login', auth, db, currentUser=null;
+const configReady = firebaseConfig.apiKey && !firebaseConfig.apiKey.includes('আপনার_') && firebaseConfig.projectId && !firebaseConfig.projectId.includes('আপনার_');
+function message(t,error=false){msg.textContent=t;msg.className=error?'auth-message error':'auth-message';}
+function setMode(next){mode=next;$('authTitle').textContent=mode==='login'?'আপনার অ্যাকাউন্টে প্রবেশ করুন':'নতুন অ্যাকাউন্ট তৈরি করুন';$('authSubmit').textContent=mode==='login'?'লগইন করুন':'অ্যাকাউন্ট তৈরি করুন';$('authSwitch').textContent=mode==='login'?'নতুন অ্যাকাউন্ট তৈরি করবেন? নিবন্ধন করুন':'আগে অ্যাকাউন্ট আছে? লগইন করুন';$('displayNameWrap').classList.toggle('hidden',mode==='login');$('authPassword').autocomplete=mode==='login'?'current-password':'new-password';message('');}
+$('authSwitch').addEventListener('click',()=>setMode(mode==='login'?'register':'login'));
+$('logoutBtn').addEventListener('click',()=>signOut(auth));
+if(!configReady){message('লগইন চালু করতে firebase-config.js ফাইলে Firebase-এর Web App config বসাতে হবে।',true);$('authSubmit').disabled=true;$('authSwitch').disabled=true;}
+else {
+ const app=initializeApp(firebaseConfig);auth=getAuth(app);db=getFirestore(app);
+ onAuthStateChanged(auth,user=>{currentUser=user;modal.classList.toggle('hidden',!!user);appArea.classList.toggle('hidden',!user);if(user){$('accountName').textContent=user.displayName||user.email;document.dispatchEvent(new CustomEvent('cv-user-ready',{detail:{uid:user.uid}}));}else{document.dispatchEvent(new CustomEvent('cv-user-logged-out'));}});
+ form.addEventListener('submit',async e=>{e.preventDefault();const email=$('authEmail').value.trim(),password=$('authPassword').value,name=$('displayName').value.trim();if(password.length<6){message('পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।',true);return;}$('authSubmit').disabled=true;message('অপেক্ষা করুন…');try{if(mode==='register'){if(!name){message('আপনার নাম লিখুন।',true);return;}const cred=await createUserWithEmailAndPassword(auth,email,password);await updateProfile(cred.user,{displayName:name});}else await signInWithEmailAndPassword(auth,email,password);message('সফল হয়েছে।');}catch(err){const map={'auth/email-already-in-use':'এই ই-মেইলে আগে অ্যাকাউন্ট খোলা হয়েছে।','auth/invalid-credential':'ই-মেইল বা পাসওয়ার্ড সঠিক নয়।','auth/weak-password':'আরও শক্তিশালী পাসওয়ার্ড দিন।','auth/invalid-email':'সঠিক ই-মেইল লিখুন।'};message(map[err.code]||'লগইন করা যায়নি। আবার চেষ্টা করুন।',true);}finally{$('authSubmit').disabled=false;}});
+}
+window.cvCloud={get uid(){return currentUser?.uid||null;},async save(data){if(!currentUser)throw Error('লগইন প্রয়োজন');const id=String(data.id||Date.now());await setDoc(doc(db,'users',currentUser.uid,'cvs',id),{...data,id,updatedAt:serverTimestamp()});return id;},async list(){if(!currentUser)return [];const snap=await getDocs(query(collection(db,'users',currentUser.uid,'cvs'),orderBy('savedAt','desc')));return snap.docs.map(d=>d.data());},async remove(id){if(!currentUser)throw Error('লগইন প্রয়োজন');await deleteDoc(doc(db,'users',currentUser.uid,'cvs',String(id)));},async clear(){if(!currentUser)throw Error('লগইন প্রয়োজন');const snap=await getDocs(collection(db,'users',currentUser.uid,'cvs'));await Promise.all(snap.docs.map(d=>deleteDoc(d.ref)));}};

@@ -5,6 +5,11 @@
   let education = [];
   let photoData = '';
   let toastTimer;
+  let currentUid = "";
+  let draftKey = "";
+  let historyKey = "";
+  let draftTimer = null;
+  let appStarted = false;
 
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const value = id => $(id).value.trim();
@@ -88,8 +93,10 @@
     });
     renderCv();
   }
-  function getHistory(){try{return JSON.parse(localStorage.getItem('banglaCvHistory')||'[]')}catch(e){return []}}
-  function setHistory(items){localStorage.setItem('banglaCvHistory',JSON.stringify(items))}
+  function getHistory(){try{return JSON.parse(localStorage.getItem(historyKey)||'[]')}catch(e){return []}}
+  function setHistory(items){localStorage.setItem(historyKey,JSON.stringify(items))}
+  function saveDraft(){if(!draftKey)return;try{localStorage.setItem(draftKey,JSON.stringify(readForm()));}catch(e){showToast('স্বয়ংক্রিয় সংরক্ষণে সমস্যা হয়েছে। ছবির আকার কমান।');}}
+  function queueDraft(){if(!draftKey)return;clearTimeout(draftTimer);draftTimer=setTimeout(saveDraft,450);}
   function renderHistory(){
     const items=getHistory();
     $('historyList').innerHTML = items.length ? items.map((item,i)=>`<article class="history-card"><div class="history-thumb">${item.thumbnail?`<img src="${item.thumbnail}" alt="সংরক্ষিত সিভির ছবি">`:'<span class="thumb-placeholder">জীবনবৃত্তান্ত</span>'}</div><h3>${escapeHtml(item.title)}</h3><p>সংরক্ষণের তারিখ: ${escapeHtml(new Date(item.savedAt).toLocaleDateString('bn-BD'))}</p><div class="history-actions"><button class="btn btn-outline" data-load="${i}">খুলুন / সম্পাদনা</button><button class="btn btn-primary" data-print="${i}">প্রিন্ট</button><button class="btn btn-outline" data-delete="${i}">মুছুন</button></div></article>`).join('') : '<div class="history-empty">এখনো কোনো সিভি সংরক্ষণ করা হয়নি।</div>';
@@ -106,9 +113,8 @@
     const data=readForm();
     const thumbnail=await makeThumbnail();
     const items=getHistory();
-    items.unshift({...data,thumbnail,id:Date.now()});
-    try{setHistory(items.slice(0,20));renderHistory();showToast('আপনার জীবনবৃত্তান্ত সংরক্ষণ করা হয়েছে।');}
-    catch(e){showToast('সংরক্ষণ করা যায়নি। ছবির আকার কমিয়ে আবার চেষ্টা করুন।');}
+    try{const record={...data,thumbnail,id:String(Date.now())};items.unshift(record);setHistory(items.slice(0,20));if(window.cvCloud?.uid)await window.cvCloud.save(record);renderHistory();showToast('আপনার জীবনবৃত্তান্ত সংরক্ষণ করা হয়েছে।');}
+    catch(e){showToast('ক্লাউডে সংরক্ষণ হয়নি। Firebase সেটিংস পরীক্ষা করুন।');}
   }
   function printCv(data){
     if(data) fillForm(data);
@@ -121,45 +127,64 @@
     if(!level){showToast('পরীক্ষার নাম লিখুন।');return;}
     education.push({level,group:value('eduGroup'),board:value('eduBoard'),result:value('eduResult'),year:value('eduYear')});
     ['eduCustom','eduGroup','eduBoard','eduResult','eduYear'].forEach(id=>$(id).value='');
-    renderEducationRows();renderCv();
+    renderEducationRows();renderCv();queueDraft();
   });
   $('educationRows').addEventListener('click',e=>{
     const index=e.target.dataset.removeEdu;
-    if(index!==undefined){education.splice(Number(index),1);renderEducationRows();renderCv();}
+    if(index!==undefined){education.splice(Number(index),1);renderEducationRows();renderCv();queueDraft();}
   });
   $('photo').addEventListener('change',e=>{
     const file=e.target.files[0];if(!file)return;
     if(!file.type.startsWith('image/')){showToast('একটি ছবি নির্বাচন করুন।');return;}
     if(file.size>4*1024*1024){showToast('ছবির আকার ৪ মেগাবাইটের কম রাখুন।');return;}
     const reader=new FileReader();
-    reader.onload=()=>{photoData=reader.result;$('photoPreview').src=photoData;renderCv();};
+    reader.onload=()=>{const image=new Image();image.onload=()=>{const canvas=document.createElement('canvas');const scale=Math.min(1,700/image.width,900/image.height);canvas.width=Math.round(image.width*scale);canvas.height=Math.round(image.height*scale);canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);photoData=canvas.toDataURL('image/jpeg',.76);$('photoPreview').src=photoData;renderCv();queueDraft();};image.src=reader.result;};
     reader.readAsDataURL(file);
   });
-  fields.forEach(id=>$(id).addEventListener('input',renderCv));
+  fields.forEach(id=>$(id).addEventListener('input',()=>{renderCv();queueDraft();}));
   ['objectiveOn','experienceOn','skillsOn','languagesOn','referenceOn'].forEach(id=>{
     $(id).addEventListener('change',()=>{
       const key=id.replace('On','');
       const field=document.querySelector(`[data-optional="${key}"]`);
       if(field)field.classList.toggle('hidden',!$(id).checked);
-      renderCv();
+      renderCv();queueDraft();
     });
   });
-  document.querySelectorAll('input[name="template"]').forEach(el=>el.addEventListener('change',renderCv));
+  document.querySelectorAll('input[name="template"]').forEach(el=>el.addEventListener('change',()=>{renderCv();queueDraft();}));
+  $('cvTitle').addEventListener('input',queueDraft);
   $('saveCv').addEventListener('click',saveCv);
   $('downloadPdf').addEventListener('click',()=>printCv());
   $('clearHistory').addEventListener('click',()=>{
     if(!getHistory().length){showToast('ইতিহাসে কোনো সিভি নেই।');return;}
-    if(confirm('সব সংরক্ষিত সিভি মুছে ফেলতে চান?')){localStorage.removeItem('banglaCvHistory');renderHistory();showToast('ইতিহাস মুছে ফেলা হয়েছে।');}
+    if(confirm('এই অ্যাকাউন্টের সব সংরক্ষিত সিভি মুছে ফেলতে চান?')){(async()=>{try{await window.cvCloud.clear();localStorage.removeItem(historyKey);renderHistory();showToast('ইতিহাস মুছে ফেলা হয়েছে।');}catch(e){showToast('ইতিহাস মুছতে সমস্যা হয়েছে।');}})();}
   });
   $('historyList').addEventListener('click',e=>{
     const load=e.target.dataset.load, del=e.target.dataset.delete, print=e.target.dataset.print;
     const items=getHistory();
     if(load!==undefined){fillForm(items[Number(load)]);$('editor').scrollIntoView({behavior:'smooth'});showToast('সংরক্ষিত সিভি খুলেছে।');}
-    if(del!==undefined){items.splice(Number(del),1);setHistory(items);renderHistory();showToast('সিভি মুছে ফেলা হয়েছে।');}
+    if(del!==undefined){const item=items[Number(del)];items.splice(Number(del),1);setHistory(items);window.cvCloud.remove(item.id).then(()=>showToast('সিভি মুছে ফেলা হয়েছে।')).catch(()=>showToast('সার্ভার থেকে মুছতে সমস্যা হয়েছে।'));renderHistory();}
     if(print!==undefined)printCv(items[Number(print)]);
   });
 
-  renderEducationRows();
-  renderCv();
-  renderHistory();
+  function startUserSession(uid){
+    if(!uid || (appStarted && uid===currentUid)) return;
+    appStarted=true; currentUid=uid; draftKey=`anikCvDraft_${uid}`; historyKey=`anikCvHistory_${uid}`;
+    try{const raw=localStorage.getItem(draftKey);if(raw)fillForm(JSON.parse(raw));}catch(e){}
+    renderEducationRows();renderCv();renderHistory();
+    window.cvCloud.list().then(items=>{if(items.length){setHistory(items.slice(0,20));renderHistory();}}).catch(()=>showToast('ক্লাউড ইতিহাস লোড হয়নি।'));
+    document.querySelectorAll('#appArea input,#appArea textarea,#appArea select').forEach(el=>{if(el.type!=='file' && el.type!=='radio')el.addEventListener('change',queueDraft);});
+  }
+  document.addEventListener('cv-user-ready',e=>startUserSession(e.detail.uid));
+  document.addEventListener('cv-user-logged-out',()=>{appStarted=false;currentUid='';draftKey='';historyKey='';});
+  $('resetCv').addEventListener('click',()=>{
+    if(!confirm('বর্তমান ফর্মের সব তথ্য মুছে নতুন CV শুরু করবেন? সংরক্ষিত CV ইতিহাস মুছবে না।'))return;
+    document.querySelectorAll('#appArea input:not([type=radio]):not([type=checkbox]),#appArea textarea').forEach(el=>{el.value='';});
+    document.querySelectorAll('#appArea input[type=checkbox]').forEach(el=>el.checked=el.id==='objectiveOn');
+    $('photo').value='';photoData='';$('photoPreview').src='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="90" height="110"%3E%3Crect width="100%25" height="100%25" fill="%23edf3f8"/%3E%3Ccircle cx="45" cy="37" r="19" fill="%23a9bdd0"/%3E%3Cpath d="M12 105c2-27 17-40 33-40s31 13 33 40" fill="%23a9bdd0"/%3E%3C/svg%3E';education=[];
+    document.querySelector('input[name="template"][value="classic"]').checked=true;
+    renderEducationRows();document.querySelectorAll('[data-optional]').forEach(el=>el.classList.toggle('hidden',el.dataset.optional!=='objective'));
+    renderCv();saveDraft();showToast('নতুন CV তৈরির জন্য ফর্ম খালি করা হয়েছে।');
+  });
+  $('refreshSite').addEventListener('click',()=>{saveDraft();location.reload();});
+  renderEducationRows();renderCv();
 })();
