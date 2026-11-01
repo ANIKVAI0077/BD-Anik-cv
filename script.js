@@ -57,7 +57,8 @@
     $('datePreview').textContent = today();
     $('signatureName').textContent = value('name') || 'আবেদনকারীর স্বাক্ষর';
     $('cvPhoto').src = photoData || '';
-    $('cvPhoto').style.display = photoData ? 'block' : 'none';
+    $('cvPhotoBox').classList.toggle('has-photo', !!photoData);
+    $('cvPhotoPlaceholder').textContent = 'ছবি';
     const template = document.querySelector('input[name="template"]:checked').value;
     $('cvPreview').className = `cv-paper template-${template}`;
   }
