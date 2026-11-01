@@ -24,6 +24,15 @@
 
 .developer-credit{margin-top:5px;font-size:11px}.developer-credit a{color:#174f7d;font-weight:700;text-decoration:none}.developer-credit a:hover{text-decoration:underline}
 
-/* Firebase account and login screen */
-.auth-gate{position:fixed;inset:0;z-index:1000;background:linear-gradient(135deg,#102b49,#176b78);display:grid;place-items:center;padding:22px;overflow:auto}.auth-gate.hidden{display:none!important}.auth-card{width:min(430px,100%);background:#fff;border:1px solid #dce7ee;border-radius:22px;padding:34px;box-shadow:0 24px 80px #061b2d55;text-align:center}.auth-brand{width:58px;height:58px;border-radius:17px;margin:0 auto 15px;display:grid;place-items:center;background:linear-gradient(135deg,#12345a,#0c9c91);color:#fff;font-size:28px;font-weight:800}.auth-card h1{font-size:22px;color:#12345a;margin:4px 0}.auth-subtitle{font-size:12px;color:#64748b;margin:0 0 22px}.auth-form{text-align:left;display:grid;gap:13px}.auth-submit{width:100%;margin-top:5px;min-height:44px}.auth-submit:disabled{opacity:.6;cursor:wait}.text-button{border:0;background:none;color:#147b82;font:inherit;font-size:12px;font-weight:700;cursor:pointer;padding:8px}.auth-switch{border-top:1px solid #e5edf2;margin-top:14px;padding-top:14px;font-size:12px;color:#64748b}.auth-message{min-height:20px;margin:10px 0 0;color:#b45309;font-size:11px;overflow-wrap:anywhere}.account-label{color:#e2edf6;font-size:11px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.btn-light{background:#eaf3f8;color:#12345a}.app-shell.hidden{display:none!important}.topbar nav{align-items:center}
-@media(max-width:700px){.auth-card{padding:25px 20px}.topbar nav{align-items:flex-end}.account-label{max-width:100px}}
+
+@media(max-width:700px){.topbar nav{align-items:flex-end}}
+
+/* Developer profile in website footer */
+.developer-card{display:flex;align-items:center;justify-content:center;gap:12px;margin:16px auto 0;padding:12px 18px;max-width:330px;background:#fff;border:1px solid #dbe5ef;border-radius:16px;box-shadow:0 5px 18px rgba(15,45,75,.07)}
+.developer-photo{width:64px;height:64px;object-fit:cover;object-position:center 24%;border-radius:50%;border:3px solid #e7eef7;display:block}
+.developer-credit{display:flex;flex-direction:column;align-items:flex-start;gap:3px;margin:0;font-size:12px}
+.developer-credit .developer-label{padding:0;color:#64748b;font-size:11px}
+.developer-credit strong{color:#173d63;font-size:15px;letter-spacing:.35px}
+.developer-credit a{color:#1769aa;font-size:11px;font-weight:700;text-decoration:none}
+.developer-credit a:hover{text-decoration:underline}
+@media(max-width:480px){.developer-card{max-width:290px;padding:10px 14px}.developer-photo{width:58px;height:58px}}

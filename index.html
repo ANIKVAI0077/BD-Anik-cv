@@ -11,29 +11,10 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-  <section id="authGate" class="auth-gate">
-    <div class="auth-card">
-      <div class="auth-brand">জী</div>
-      <p class="eyebrow">ANIK.CV.COM</p>
-      <h1 id="authTitle">আপনার অ্যাকাউন্টে লগইন করুন</h1>
-      <p class="auth-subtitle">আপনার জীবনবৃত্তান্ত নিরাপদে সংরক্ষণ ও ফিরে পেতে প্রবেশ করুন।</p>
-      <form id="authForm" class="auth-form">
-        <label class="field hidden" id="authNameWrap"><span>আপনার নাম</span><input id="authName" autocomplete="name" placeholder="সম্পূর্ণ নাম"></label>
-        <label class="field"><span>ই-মেইল</span><input id="authEmail" type="email" autocomplete="username" required placeholder="আপনার ই-মেইল"></label>
-        <label class="field"><span>পাসওয়ার্ড</span><input id="authPassword" type="password" autocomplete="current-password" minlength="6" required placeholder="কমপক্ষে ৬ অক্ষর"></label>
-        <button id="authSubmit" class="btn btn-primary auth-submit" type="submit">লগইন করুন</button>
-      </form>
-      <button id="forgotPassword" class="text-button" type="button">পাসওয়ার্ড ভুলে গেছেন?</button>
-      <div class="auth-switch"><span id="authSwitchText">নতুন ব্যবহারকারী?</span> <button id="authSwitch" class="text-button" type="button">নতুন অ্যাকাউন্ট তৈরি করুন</button></div>
-      <p class="auth-message" id="authMessage" role="status"></p>
-    </div>
-  </section>
-
-  <div id="appShell" class="app-shell hidden">
+<div id="appShell" class="app-shell">
   <header class="topbar">
     <a class="brand" href="#"><span class="brand-icon">জী</span><span>বাংলা জীবনবৃত্তান্ত নির্মাতা<small>পেশাদার • সহজ • সম্পূর্ণ বাংলায়</small></span></a>
-    <nav><a href="#editor">সিভি তৈরি</a><a href="#history">সংরক্ষিত সিভি</a><span id="accountLabel" class="account-label"></span><button id="logoutBtn" class="btn btn-light btn-small" type="button">লগআউট</button></nav>
+    <nav><a href="#editor">সিভি তৈরি</a><a href="#history">সংরক্ষিত সিভি</a></nav>
   </header>
 
   <main class="page-wrap">
@@ -136,7 +117,17 @@
       <div id="historyList" class="history-grid"><div class="history-empty">এখনো কোনো সিভি সংরক্ষণ করা হয়নি।</div></div>
     </section>
   </main>
-  <footer class="site-footer"><div>বাংলা জীবনবৃত্তান্ত নির্মাতা <span>•</span> আপনার তথ্য আপনার নিজের ব্রাউজারেই সংরক্ষিত থাকে</div><div class="developer-credit">ওয়েবসাইট ডেভেলপার: <strong>MD ANIK MIA</strong> <span>•</span> <a href="https://www.facebook.com/share/1934NUGSWR/" target="_blank" rel="noopener noreferrer">ফেসবুক প্রোফাইল</a></div></footer>
+  <footer class="site-footer">
+  <div>বাংলা জীবনবৃত্তান্ত নির্মাতা <span>•</span> আপনার তথ্য আপনার নিজের ব্রাউজারেই সংরক্ষিত থাকে</div>
+  <div class="developer-card">
+    <img class="developer-photo" src="developer-photo.jpg" alt="ওয়েবসাইট ডেভেলপার MD ANIK MIA">
+    <div class="developer-credit">
+      <span class="developer-label">ওয়েবসাইট ডেভেলপার</span>
+      <strong>MD ANIK MIA</strong>
+      <a href="https://www.facebook.com/share/1934NUGSWR/" target="_blank" rel="noopener noreferrer">ফেসবুক প্রোফাইল</a>
+    </div>
+  </div>
+</footer>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>

@@ -1,68 +1,16 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-import {
-  getAuth, onAuthStateChanged, createUserWithEmailAndPassword,
-  signInWithEmailAndPassword, sendPasswordResetEmail, signOut, updateProfile
-} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-import {
-  getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc,
-  query, orderBy, limit
-} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-import { firebaseConfig } from "./firebase-config.js";
 
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
   const fields = ['name','father','mother','dob','gender','religion','nationality','height','blood','marital','phone','email','nid','birthReg','present','permanent','objective','experience','skills','languages','reference'];
-  let education = [], photoData = '', toastTimer, draftTimer, currentUser = null, authMode = 'login';
+  let education = [], photoData = '', toastTimer, draftTimer;
+  const DRAFT_KEY = 'anikcv_draft_v1';
+  const HISTORY_KEY = 'anikcv_history_v1';
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const value = id => $(id).value.trim();
   const showToast = message => { $('toast').textContent=message; $('toast').classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>$('toast').classList.remove('show'),2600); };
-  const authMessage = message => { $('authMessage').textContent=message; };
   const bnDate = raw => { if(!raw)return ''; const p=raw.split('-'); return p.length===3?`${p[2]}/${p[1]}/${p[0]}`:raw; };
   const today = () => new Intl.DateTimeFormat('bn-BD',{day:'2-digit',month:'2-digit',year:'numeric'}).format(new Date());
-  const userCollection = name => collection(db,'users',currentUser.uid,name);
-  const userDoc = (name,id) => doc(db,'users',currentUser.uid,name,id);
-
-  function setAuthMode(mode){
-    authMode=mode; const register=mode==='register';
-    $('authTitle').textContent=register?'নতুন অ্যাকাউন্ট তৈরি করুন':'আপনার অ্যাকাউন্টে লগইন করুন';
-    $('authNameWrap').classList.toggle('hidden',!register);
-    $('authName').required=register;
-    $('authSubmit').textContent=register?'অ্যাকাউন্ট তৈরি করুন':'লগইন করুন';
-    $('authSwitchText').textContent=register?'আগে থেকেই অ্যাকাউন্ট আছে?':'নতুন ব্যবহারকারী?';
-    $('authSwitch').textContent=register?'লগইন করুন':'নতুন অ্যাকাউন্ট তৈরি করুন';
-    $('forgotPassword').classList.toggle('hidden',register);
-    $('authPassword').autocomplete=register?'new-password':'current-password';
-    authMessage('');
-  }
-  $('authSwitch').addEventListener('click',()=>setAuthMode(authMode==='login'?'register':'login'));
-  $('authForm').addEventListener('submit',async e=>{
-    e.preventDefault(); const email=value('authEmail'), password=$('authPassword').value;
-    $('authSubmit').disabled=true; authMessage('অনুগ্রহ করে অপেক্ষা করুন…');
-    try{
-      if(authMode==='register'){
-        const name=value('authName');
-        const cred=await createUserWithEmailAndPassword(auth,email,password);
-        await updateProfile(cred.user,{displayName:name});
-        await setDoc(doc(db,'users',cred.user.uid,'profile','main'),{name,email,createdAt:new Date().toISOString()});
-      } else await signInWithEmailAndPassword(auth,email,password);
-    }catch(err){ authMessage(authError(err)); }
-    finally{$('authSubmit').disabled=false;}
-  });
-  $('forgotPassword').addEventListener('click',async()=>{
-    const email=value('authEmail'); if(!email){authMessage('আগে আপনার ই-মেইল লিখুন।');$('authEmail').focus();return;}
-    try{await sendPasswordResetEmail(auth,email);authMessage('পাসওয়ার্ড পরিবর্তনের লিংক আপনার ই-মেইলে পাঠানো হয়েছে।');}
-    catch(err){authMessage(authError(err));}
-  });
-  $('logoutBtn').addEventListener('click',async()=>{try{await signOut(auth);}catch(e){showToast('লগআউট করা যায়নি। আবার চেষ্টা করুন।');}});
-  function authError(err){
-    const map={'auth/email-already-in-use':'এই ই-মেইল দিয়ে আগে থেকেই অ্যাকাউন্ট আছে।','auth/invalid-email':'সঠিক ই-মেইল ঠিকানা লিখুন।','auth/weak-password':'পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।','auth/invalid-credential':'ই-মেইল অথবা পাসওয়ার্ড সঠিক নয়।','auth/user-not-found':'এই ই-মেইলে কোনো অ্যাকাউন্ট পাওয়া যায়নি।','auth/too-many-requests':'অনেকবার চেষ্টা হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করুন।','auth/network-request-failed':'ইন্টারনেট সংযোগ পরীক্ষা করুন।'};
-    return map[err.code] || `সমস্যা হয়েছে: ${err.message||'আবার চেষ্টা করুন।'}`;
-  }
-
   function renderEducationRows(){
     const body=$('educationRows');
     if(!education.length){body.innerHTML='<tr class="empty-row"><td colspan="6">এখনো কোনো শিক্ষাগত যোগ্যতা যোগ করা হয়নি</td></tr>';return;}
@@ -98,27 +46,41 @@ import { firebaseConfig } from "./firebase-config.js";
     if(typeof window.html2canvas!=='function')return '';
     try{const canvas=await window.html2canvas($('cvPreview'),{scale:.45,backgroundColor:'#fff',useCORS:true});return canvas.toDataURL('image/jpeg',.38);}catch(e){return '';}
   }
+  function readStored(key, fallback){
+    try { const raw=localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }
+    catch(err){ console.warn('Local storage read failed',err); return fallback; }
+  }
+  function writeStored(key, data){
+    try { localStorage.setItem(key, JSON.stringify(data)); return true; }
+    catch(err){ console.warn('Local storage write failed',err); showToast('ব্রাউজারের জায়গা পূর্ণ। কিছু পুরোনো সিভি মুছে আবার চেষ্টা করুন।'); return false; }
+  }
   function scheduleDraftSave(){
-    if(!currentUser)return; clearTimeout(draftTimer);
-    draftTimer=setTimeout(async()=>{try{await setDoc(userDoc('drafts','current'),readForm());}catch(err){console.warn('Draft save failed',err);showToast('স্বয়ংক্রিয় সংরক্ষণ হয়নি। ইন্টারনেট পরীক্ষা করুন।');}},1300);
+    clearTimeout(draftTimer);
+    draftTimer=setTimeout(()=>{
+      const data=readForm();
+      if(writeStored(DRAFT_KEY,data)) showToast('আপনার কাজ স্বয়ংক্রিয়ভাবে সংরক্ষিত হয়েছে।');
+    },900);
   }
-  async function loadDraft(){
-    try{const snap=await getDoc(userDoc('drafts','current'));if(snap.exists()){fillForm(snap.data());showToast('আগের অসমাপ্ত কাজ ফিরিয়ে আনা হয়েছে।');}else{renderCv();}}
-    catch(err){console.error(err);showToast('আগের খসড়া লোড করা যায়নি।');}
+  function loadDraft(){
+    const data=readStored(DRAFT_KEY,null);
+    if(data){ fillForm(data); showToast('আগের অসমাপ্ত কাজ ফিরিয়ে আনা হয়েছে।'); }
+    else renderCv();
   }
-  async function renderHistory(){
-    const box=$('historyList'); box.innerHTML='<div class="history-empty">সংরক্ষিত সিভি লোড হচ্ছে…</div>';
-    try{
-      const q=query(userCollection('cvs'),orderBy('savedAt','desc'),limit(30)); const snap=await getDocs(q);
-      const items=snap.docs.map(d=>({id:d.id,...d.data()}));
-      box.innerHTML=items.length?items.map(item=>`<article class="history-card"><div class="history-thumb">${item.thumbnail?`<img src="${item.thumbnail}" alt="সংরক্ষিত সিভির নমুনা">`:'<span class="thumb-placeholder">জীবনবৃত্তান্ত</span>'}</div><h3>${escapeHtml(item.title||'জীবনবৃত্তান্ত')}</h3><p>সংরক্ষণের তারিখ: ${escapeHtml(item.savedAt?new Date(item.savedAt).toLocaleDateString('bn-BD'):'')}</p><div class="history-actions"><button class="btn btn-outline" data-load="${item.id}">খুলুন / সম্পাদনা</button><button class="btn btn-primary" data-print="${item.id}">প্রিন্ট</button><button class="btn btn-outline" data-delete="${item.id}">মুছুন</button></div></article>`).join(''):'<div class="history-empty">এখনো কোনো সিভি সংরক্ষণ করা হয়নি।</div>';
-    }catch(err){console.error(err);box.innerHTML='<div class="history-empty">সিভির ইতিহাস লোড করা যায়নি। Firestore Rules পরীক্ষা করুন।</div>';}
+  function renderHistory(){
+    const box=$('historyList');
+    const items=readStored(HISTORY_KEY,[]).sort((a,b)=>String(b.savedAt||'').localeCompare(String(a.savedAt||'')));
+    box.innerHTML=items.length?items.map(item=>`<article class="history-card"><div class="history-thumb">${item.thumbnail?`<img src="${item.thumbnail}" alt="সংরক্ষিত সিভির নমুনা">`:'<span class="thumb-placeholder">জীবনবৃত্তান্ত</span>'}</div><h3>${escapeHtml(item.title||'জীবনবৃত্তান্ত')}</h3><p>সংরক্ষণের তারিখ: ${escapeHtml(item.savedAt?new Date(item.savedAt).toLocaleDateString('bn-BD'):'')}</p><div class="history-actions"><button class="btn btn-outline" data-load="${escapeHtml(item.id)}">খুলুন / সম্পাদনা</button><button class="btn btn-primary" data-print="${escapeHtml(item.id)}">প্রিন্ট</button><button class="btn btn-outline" data-delete="${escapeHtml(item.id)}">মুছুন</button></div></article>`).join(''):'<div class="history-empty">এখনো কোনো সিভি সংরক্ষণ করা হয়নি।</div>';
   }
   async function saveCv(){
     if(!value('name')){showToast('অনুগ্রহ করে পূর্ণ নাম লিখুন।');$('name').focus();return;}
     const btn=$('saveCv');btn.disabled=true;
-    try{const data=readForm();data.thumbnail=await makeThumbnail();const ref=doc(userCollection('cvs'));await setDoc(ref,data);await renderHistory();showToast('আপনার সিভি অ্যাকাউন্টে সংরক্ষণ করা হয়েছে।');}
-    catch(err){console.error(err);showToast('সিভি সংরক্ষণ হয়নি। Firestore Rules ও ইন্টারনেট পরীক্ষা করুন।');}
+    try{
+      const data=readForm(); data.thumbnail=await makeThumbnail();
+      data.id=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():String(Date.now());
+      const items=readStored(HISTORY_KEY,[]);
+      items.unshift(data);
+      if(writeStored(HISTORY_KEY,items.slice(0,30))){renderHistory();showToast('আপনার সিভি এই ব্রাউজারে সংরক্ষণ করা হয়েছে।');}
+    }catch(err){console.error(err);showToast('সিভি সংরক্ষণ করা যায়নি। ব্রাউজারের জায়গা পরীক্ষা করুন।');}
     finally{btn.disabled=false;}
   }
   function printCv(data){if(data)fillForm(data);renderCv();window.print();}
@@ -136,19 +98,19 @@ import { firebaseConfig } from "./firebase-config.js";
   ['objectiveOn','experienceOn','skillsOn','languagesOn','referenceOn'].forEach(id=>$(id).addEventListener('change',()=>{const key=id.replace('On','');const field=document.querySelector(`[data-optional="${key}"]`);if(field)field.classList.toggle('hidden',!$(id).checked);renderCv();scheduleDraftSave();}));
   document.querySelectorAll('input[name="template"]').forEach(el=>el.addEventListener('change',()=>{renderCv();scheduleDraftSave();}));
   $('cvTitle').addEventListener('input',scheduleDraftSave); $('saveCv').addEventListener('click',saveCv); $('downloadPdf').addEventListener('click',()=>printCv());
-  $('clearHistory').addEventListener('click',async()=>{if(!confirm('আপনার অ্যাকাউন্টের সব সংরক্ষিত সিভি মুছে ফেলতে চান?'))return;try{const snap=await getDocs(userCollection('cvs'));await Promise.all(snap.docs.map(d=>deleteDoc(d.ref)));await renderHistory();showToast('আপনার সিভির ইতিহাস মুছে ফেলা হয়েছে।');}catch(e){showToast('ইতিহাস মুছতে সমস্যা হয়েছে।');}});
-  $('historyList').addEventListener('click',async e=>{
+  $('clearHistory').addEventListener('click',()=>{if(!confirm('এই ব্রাউজারে সংরক্ষিত সব সিভি মুছে ফেলতে চান?'))return;localStorage.removeItem(HISTORY_KEY);renderHistory();showToast('সিভির ইতিহাস মুছে ফেলা হয়েছে।');});
+  $('historyList').addEventListener('click',e=>{
     const load=e.target.dataset.load,del=e.target.dataset.delete,print=e.target.dataset.print;
-    try{
-      if(load){const snap=await getDoc(userDoc('cvs',load));if(snap.exists()){fillForm(snap.data());scheduleDraftSave();$('editor').scrollIntoView({behavior:'smooth'});showToast('সংরক্ষিত সিভি খোলা হয়েছে।');}}
-      if(del){await deleteDoc(userDoc('cvs',del));await renderHistory();showToast('সিভি মুছে ফেলা হয়েছে।');}
-      if(print){const snap=await getDoc(userDoc('cvs',print));if(snap.exists())printCv(snap.data());}
-    }catch(err){showToast('কাজটি সম্পন্ন করা যায়নি।');}
+    const items=readStored(HISTORY_KEY,[]);
+    const id=load||del||print;
+    if(!id)return;
+    const item=items.find(x=>x.id===id);
+    if(!item)return;
+    if(load){fillForm(item);scheduleDraftSave();$('editor').scrollIntoView({behavior:'smooth'});showToast('সংরক্ষিত সিভি খোলা হয়েছে।');}
+    if(del){const next=items.filter(x=>x.id!==id);writeStored(HISTORY_KEY,next);renderHistory();showToast('সিভি মুছে ফেলা হয়েছে।');}
+    if(print)printCv(item);
   });
-  onAuthStateChanged(auth,async user=>{
-    currentUser=user;
-    $('authGate').classList.toggle('hidden',!!user); $('appShell').classList.toggle('hidden',!user);
-    if(user){$('accountLabel').textContent=user.displayName||user.email;$('authPassword').value='';await loadDraft();await renderHistory();}
-    else{clearTimeout(draftTimer);setAuthMode('login');$('historyList').innerHTML='<div class="history-empty">লগইন করলে আপনার সংরক্ষিত সিভি দেখা যাবে।</div>';}
-  });
+  loadDraft();
+  renderHistory();
+
 })();

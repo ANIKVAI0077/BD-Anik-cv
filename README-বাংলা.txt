@@ -1,21 +1,32 @@
-ANIK.CV.COM — Firebase সংযুক্ত সংস্করণ
+ANIK.CV.COM — চূড়ান্ত লগইনবিহীন সংস্করণ
 
-ফাইলসমূহ:
-- index.html, style.css, script.js
-- firebase-config.js (তোমার Firebase Web config)
-- firestore.rules (ব্যবহারকারীভিত্তিক নিরাপত্তা নিয়ম)
+এই প্যাকেজে আছে:
+1. index.html
+2. style.css
+3. script.js
+4. developer-photo.jpg (ওয়েবসাইটের ডেভেলপার ছবির জন্য)
 
-সেটআপ:
-১) Firebase Console > Authentication > Sign-in method > Email/Password Enable থাকতে হবে।
-২) Firestore Database > Rules-এ firestore.rules ফাইলের সম্পূর্ণ নিয়ম কপি করে Publish করতে হবে।
-৩) GitHub Pages-এ সব ফাইল একই ফোল্ডারের রুটে আপলোড করতে হবে।
-৪) Firebase Console > Authentication > Settings > Authorized domains-এ তোমার GitHub Pages hostname যুক্ত করতে হবে (যেমন username.github.io)।
-৫) HTTPS দিয়ে ওয়েবসাইট খুলতে হবে।
+ব্যবহার:
+- চারটি ফাইল একই ফোল্ডারে রাখুন।
+- GitHub Pages repository-তে আগের index.html, style.css ও script.js-এর জায়গায় এই তিনটি ফাইল আপলোড/Replace করুন।
+- firebase-config.js, auth.js বা Firebase SDK এই সংস্করণে দরকার নেই।
+- GitHub Pages-এ পরিবর্তন প্রকাশের পর সাইটে hard refresh করুন (মোবাইলে cache clear করে পুনরায় খুলুন)।
 
-অ্যাকাউন্ট:
-- ওয়েবসাইট খুলে নতুন অ্যাকাউন্ট তৈরি করো (নাম, ই-মেইল, পাসওয়ার্ড)।
-- প্রত্যেক ব্যবহারকারীর CV users/{uid}/cvs-এ এবং অসমাপ্ত খসড়া users/{uid}/drafts/current-এ থাকে।
-- Firestore rules UID অনুযায়ী অন্য ব্যবহারকারীর ডেটা পড়া/লেখা বন্ধ রাখে।
-- ছবি ছোট JPEG-এ সংকুচিত করে CV-র সঙ্গে Firestore-এ রাখা হয়।
+যা আছে:
+- বাংলা CV ফর্ম, লাইভ প্রিভিউ ও তিনটি টেমপ্লেট
+- শিক্ষাগত যোগ্যতা যোগ/মুছুন
+- ঐচ্ছিক অংশ চালু/বন্ধ
+- পাসপোর্ট ছবি আপলোড; ছবি না থাকলে শুধু “ছবি” placeholder, ছবি থাকলে placeholder লুকানো
+- CV সংরক্ষণ, ইতিহাস, খুলুন, প্রিন্ট
+- ব্রাউজারে draft auto-save
 
-নোট: Firebase Web API key browser config-এ থাকা স্বাভাবিক। নিরাপত্তা নির্ভর করে Authentication, Firestore Rules এবং Firebase project restrictions-এর ওপর; Service Account private key কখনো ওয়েবসাইটে দেবে না।
+তথ্য সংরক্ষণের সীমাবদ্ধতা:
+ডেভেলপার ছবি শুধু ওয়েবসাইটের ফুটারে দেখাবে, CV-এর ভেতরে নয়।
+
+এই সংস্করণে তথ্য localStorage-এ থাকে। একই ব্রাউজার ও ডিভাইসে রিফ্রেশ করলে থাকবে। Browser data/cache/site data মুছে ফেললে, private/incognito mode ব্যবহার করলে বা অন্য ডিভাইসে গেলে তথ্য নাও থাকতে পারে। এটি Firebase cloud account storage নয়।
+
+PDF:
+“PDF/প্রিন্ট” বোতাম ব্রাউজারের Print dialog খুলবে। সেখানে “Save as PDF” নির্বাচন করুন। কনটেন্ট এক A4 পৃষ্ঠায় না ধরলে একাধিক পৃষ্ঠা হতে পারে; কোনো লেখা কেটে ফেলার চেয়ে পূর্ণ CV রাখা অগ্রাধিকার পাবে।
+
+ডেভেলপার ক্রেডিট:
+MD ANIK MIA, আপলোড করা ডেভেলপার ছবি এবং দেওয়া Facebook link।
