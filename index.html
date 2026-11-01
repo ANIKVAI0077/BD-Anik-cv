@@ -4,33 +4,36 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#12345a">
-  <title>anik.cv.com | পেশাদার জীবনবৃত্তান্ত নির্মাতা</title>
+  <title>বাংলা জীবনবৃত্তান্ত নির্মাতা</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <section class="auth-gate" id="authGate">
+
+  <section id="authGate" class="auth-gate">
     <div class="auth-card">
-      <div class="auth-logo">AH</div><p class="auth-kicker">ANIK.CV.COM</p>
-      <h1 id="authTitle">আপনার অ্যাকাউন্টে প্রবেশ করুন</h1>
-      <p class="auth-subtitle">আপনার জীবনবৃত্তান্ত নিরাপদে সংরক্ষণ ও পরিচালনা করুন</p>
-      <form id="authForm">
-        <label class="field hidden" id="displayNameWrap"><span>আপনার নাম</span><input id="displayName" autocomplete="name" placeholder="সম্পূর্ণ নাম"></label>
-        <label class="field"><span>ই-মেইল ঠিকানা</span><input id="authEmail" type="email" required autocomplete="email" placeholder="আপনার ই-মেইল"></label>
-        <label class="field"><span>পাসওয়ার্ড</span><input id="authPassword" type="password" required minlength="6" autocomplete="current-password" placeholder="কমপক্ষে ৬ অক্ষর"></label>
-        <button class="btn btn-primary auth-submit" id="authSubmit">লগইন করুন</button>
+      <div class="auth-brand">জী</div>
+      <p class="eyebrow">ANIK.CV.COM</p>
+      <h1 id="authTitle">আপনার অ্যাকাউন্টে লগইন করুন</h1>
+      <p class="auth-subtitle">আপনার জীবনবৃত্তান্ত নিরাপদে সংরক্ষণ ও ফিরে পেতে প্রবেশ করুন।</p>
+      <form id="authForm" class="auth-form">
+        <label class="field hidden" id="authNameWrap"><span>আপনার নাম</span><input id="authName" autocomplete="name" placeholder="সম্পূর্ণ নাম"></label>
+        <label class="field"><span>ই-মেইল</span><input id="authEmail" type="email" autocomplete="username" required placeholder="আপনার ই-মেইল"></label>
+        <label class="field"><span>পাসওয়ার্ড</span><input id="authPassword" type="password" autocomplete="current-password" minlength="6" required placeholder="কমপক্ষে ৬ অক্ষর"></label>
+        <button id="authSubmit" class="btn btn-primary auth-submit" type="submit">লগইন করুন</button>
       </form>
-      <p class="auth-message" id="authMessage">লগইন অথবা নতুন অ্যাকাউন্ট তৈরি করুন।</p>
-      <button class="auth-switch" id="authSwitch" type="button">নতুন অ্যাকাউন্ট তৈরি করবেন? নিবন্ধন করুন</button>
-      <small class="auth-safe">প্রতিটি অ্যাকাউন্টের সিভি আলাদাভাবে সংরক্ষিত থাকে।</small>
+      <button id="forgotPassword" class="text-button" type="button">পাসওয়ার্ড ভুলে গেছেন?</button>
+      <div class="auth-switch"><span id="authSwitchText">নতুন ব্যবহারকারী?</span> <button id="authSwitch" class="text-button" type="button">নতুন অ্যাকাউন্ট তৈরি করুন</button></div>
+      <p class="auth-message" id="authMessage" role="status"></p>
     </div>
   </section>
-  <div id="appArea" class="hidden">
+
+  <div id="appShell" class="app-shell hidden">
   <header class="topbar">
-    <a class="brand" href="#"><span class="brand-icon">AM</span><span>anik.cv.com<small>পেশাদার জীবনবৃত্তান্ত নির্মাতা</small></span></a>
-    <nav><a href="#editor">সিভি তৈরি</a><a href="#history">সংরক্ষিত সিভি</a><span class="account-name" id="accountName"></span><button class="logout-btn" id="logoutBtn" type="button">লগআউট</button></nav>
+    <a class="brand" href="#"><span class="brand-icon">জী</span><span>বাংলা জীবনবৃত্তান্ত নির্মাতা<small>পেশাদার • সহজ • সম্পূর্ণ বাংলায়</small></span></a>
+    <nav><a href="#editor">সিভি তৈরি</a><a href="#history">সংরক্ষিত সিভি</a><span id="accountLabel" class="account-label"></span><button id="logoutBtn" class="btn btn-light btn-small" type="button">লগআউট</button></nav>
   </header>
 
   <main class="page-wrap">
@@ -104,7 +107,7 @@
             <label class="template-choice"><input type="radio" name="template" value="elegant"><span class="mini-template elegant-mini"><b>জীবনবৃত্তান্ত</b><i></i><i></i><i></i></span><strong>সাধারণ মার্জিত</strong></label>
           </div>
           <label class="field"><span>সিভির নাম (ইতিহাসে দেখাবে)</span><input id="cvTitle" placeholder="যেমন: আমার চাকরির জীবনবৃত্তান্ত"></label>
-          <div class="action-row"><button class="btn btn-primary" id="saveCv" type="button">সিভি সংরক্ষণ করুন</button><button class="btn btn-outline" id="downloadPdf" type="button">পিডিএফ / প্রিন্ট</button></div><div class="action-row utility-actions"><button class="btn btn-outline" id="resetCv" type="button">CV-এর তথ্য মুছে ফেলুন</button><button class="btn btn-outline" id="refreshSite" type="button">ওয়েবসাইট রিফ্রেশ করুন</button></div>
+          <div class="action-row"><button class="btn btn-primary" id="saveCv" type="button">সিভি সংরক্ষণ করুন</button><button class="btn btn-outline" id="downloadPdf" type="button">পিডিএফ / প্রিন্ট</button></div>
           <p class="form-note">পিডিএফ পেতে প্রিন্ট উইন্ডোতে “পিডিএফ হিসেবে সংরক্ষণ” নির্বাচন করুন।</p>
         </div>
       </section>
@@ -133,14 +136,10 @@
       <div id="historyList" class="history-grid"><div class="history-empty">এখনো কোনো সিভি সংরক্ষণ করা হয়নি।</div></div>
     </section>
   </main>
-  <footer class="site-footer">
-    <section class="developer-card"><img src="developer.png" alt="ওয়েবসাইট ডেভেলপার MD ANIK MIA"><div><p class="developer-label">DESIGNED & DEVELOPED BY</p><h2>MD ANIK MIA</h2><p>anik.cv.com-এর নির্মাতা</p><div class="developer-links"><a href="https://www.facebook.com/share/1934NUGSWR/" target="_blank" rel="noopener noreferrer">ফেসবুক প্রোফাইল</a><a href="https://wa.me/8801759935473" target="_blank" rel="noopener noreferrer">WhatsApp: 01759935473</a></div></div><div class="developer-monogram">AM</div></section>
-    <div class="footer-copy">anik.cv.com <span>•</span> আপনার অ্যাকাউন্টের সিভি শুধু আপনিই দেখতে পারবেন</div>
-  </footer>
+  <footer class="site-footer"><div>বাংলা জীবনবৃত্তান্ত নির্মাতা <span>•</span> আপনার তথ্য আপনার নিজের ব্রাউজারেই সংরক্ষিত থাকে</div><div class="developer-credit">ওয়েবসাইট ডেভেলপার: <strong>MD ANIK MIA</strong> <span>•</span> <a href="https://www.facebook.com/share/1934NUGSWR/" target="_blank" rel="noopener noreferrer">ফেসবুক প্রোফাইল</a></div></footer>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <script src="script.js"></script>
-  <script type="module" src="auth.js"></script>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>

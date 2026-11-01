@@ -1,10 +1,11 @@
-// Firebase Console থেকে আপনার Web App-এর config এখানে বসান।
-// Firebase ছাড়া নিরাপদ লগইন/ব্যক্তিগত ক্লাউড সংরক্ষণ চালু হবে না।
+// Firebase web configuration for anikcvcom.
+// This configuration is intended for browser use; protect user data with Firestore Security Rules.
 export const firebaseConfig = {
-  apiKey: "আপনার_API_KEY",
-  authDomain: "আপনার_PROJECT_ID.firebaseapp.com",
-  projectId: "আপনার_PROJECT_ID",
-  storageBucket: "আপনার_PROJECT_ID.appspot.com",
-  messagingSenderId: "আপনার_SENDER_ID",
-  appId: "আপনার_APP_ID"
+  apiKey: "AIzaSyAHswZQ6CmopZf56MnWRrXpZN5JnTICjbLs",
+  authDomain: "anikcvcom.firebaseapp.com",
+  projectId: "anikcvcom",
+  storageBucket: "anikcvcom.firebasestorage.app",
+  messagingSenderId: "374628886055",
+  appId: "1:374628886055:web:2ac2ba38401476d1d3d002",
+  measurementId: "G-NQKQ1TCW50"
 };

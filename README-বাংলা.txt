@@ -1,20 +1,21 @@
-ANIK.CV.COM — সেটআপ নির্দেশিকা
+ANIK.CV.COM — Firebase সংযুক্ত সংস্করণ
 
-ফাইলগুলো একই ফোল্ডারে রাখুন:
-index.html, style.css, script.js, auth.js, firebase-config.js, developer.png
+ফাইলসমূহ:
+- index.html, style.css, script.js
+- firebase-config.js (তোমার Firebase Web config)
+- firestore.rules (ব্যবহারকারীভিত্তিক নিরাপত্তা নিয়ম)
 
-গুরুত্বপূর্ণ: নিরাপদ লগইন/অ্যাকাউন্ট এবং ব্যবহারকারীভিত্তিক অনলাইন CV সংরক্ষণের জন্য Firebase লাগবে। শুধু GitHub Pages/HTML দিয়ে নিরাপদ ব্যক্তিগত অ্যাকাউন্ট সম্ভব নয়।
+সেটআপ:
+১) Firebase Console > Authentication > Sign-in method > Email/Password Enable থাকতে হবে।
+২) Firestore Database > Rules-এ firestore.rules ফাইলের সম্পূর্ণ নিয়ম কপি করে Publish করতে হবে।
+৩) GitHub Pages-এ সব ফাইল একই ফোল্ডারের রুটে আপলোড করতে হবে।
+৪) Firebase Console > Authentication > Settings > Authorized domains-এ তোমার GitHub Pages hostname যুক্ত করতে হবে (যেমন username.github.io)।
+৫) HTTPS দিয়ে ওয়েবসাইট খুলতে হবে।
 
-১) https://console.firebase.google.com/ এ গিয়ে নতুন Firebase project তৈরি করুন।
-২) Authentication > Sign-in method থেকে Email/Password চালু করুন।
-৩) Firestore Database তৈরি করুন।
-৪) Project settings > General > Your apps > Web app তৈরি করে Firebase config কপি করুন।
-৫) firebase-config.js ফাইলে placeholder-এর জায়গায় নিজের config বসান।
-৬) Firestore Rules-এ firestore.rules ফাইলের নিয়মগুলো Publish করুন।
-৭) ছয়টি ফাইল GitHub repository-র root-এ আপলোড করুন।
+অ্যাকাউন্ট:
+- ওয়েবসাইট খুলে নতুন অ্যাকাউন্ট তৈরি করো (নাম, ই-মেইল, পাসওয়ার্ড)।
+- প্রত্যেক ব্যবহারকারীর CV users/{uid}/cvs-এ এবং অসমাপ্ত খসড়া users/{uid}/drafts/current-এ থাকে।
+- Firestore rules UID অনুযায়ী অন্য ব্যবহারকারীর ডেটা পড়া/লেখা বন্ধ রাখে।
+- ছবি ছোট JPEG-এ সংকুচিত করে CV-র সঙ্গে Firestore-এ রাখা হয়।
 
-Firebase Firestore Rules ব্যবহারকারীর UID অনুযায়ী প্রতিটি CV আলাদা রাখে। কাউকে Firebase Console-এর Admin access দেবেন না।
-
-ওয়েবসাইটের প্রদর্শিত নাম anik.cv.com রাখা হয়েছে। বাস্তবে anik.cv.com ঠিকানাটি ব্যবহার করতে হলে cv.com ডোমেইনের মালিকানা/অনুমতি থাকতে হবে, কারণ এটি cv.com-এর একটি subdomain। নিজের ডোমেইন (যেমন anikcv.com) কিনলে GitHub Pages Settings > Custom domain-এ সেটি যুক্ত করে DNS রেকর্ড দিতে হবে।
-
-ছবি আপলোড হলে CV-এর ছবির বক্সের “ছবি” লেখা CSS দিয়ে লুকানো হয়; ছবি না থাকলে লেখা দেখা যায়।
+নোট: Firebase Web API key browser config-এ থাকা স্বাভাবিক। নিরাপত্তা নির্ভর করে Authentication, Firestore Rules এবং Firebase project restrictions-এর ওপর; Service Account private key কখনো ওয়েবসাইটে দেবে না।
